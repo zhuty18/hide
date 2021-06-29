@@ -24,11 +24,11 @@ if hashide:
     os.system("ps")
     print("有隐藏的进程！")
     print(hide)
-    k=input("输入Y显示进程！")
+    k=input("输入Y杀死进程！")
     if k=='y' or k=='Y':
         for i in range(0,len(hide)):
-            print("sudo umount "+hide[i][0]+" "+hide[i][1])
             os.system("sudo umount "+hide[i][0]+" "+hide[i][1])
         os.system("ps")
+        os.system("sudo kill "+hide[i][1].replace("/proc/",""))
 else:
     print("当前没有被隐藏的进程！")
