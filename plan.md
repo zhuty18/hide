@@ -4,10 +4,6 @@
 
 # plan B
 
-劫持Hook系统调用
-
-# plan C
-
 找到要隐藏进程的PID（举例为666）```ps -ef```
 
 找到磁盘编号（我的为/dev/nvme0n1p8）```df```
@@ -19,7 +15,9 @@
 
 重新显示进程```sudo umount /dev/nvme0n1p8 /proc/666```
 
-# plan D
+# plan C
+
+劫持系统
 
 ps原理：
 （1）调用openat系统函数获取/proc目录的文件句柄
@@ -41,7 +39,7 @@ III、自己写个python小工具，直接读取/proc中的内容，对于ps等�
 IV、使用sysdig（有开源版，可以监控ps等的调用过程，观察是否有恶意动态库被加载。strace有类似功能）或者prochunter（google 上search）
 sysdig proc.name=ps
 
-# plan E
+# plan D
 
 劫持VFS接口层
 
@@ -51,3 +49,9 @@ proc文件系统也是VFS抽象类的一个具体子类，与其它文件系统�
 
 查看内核编译时间```uname -a```
 查看内核模块```lsmod```
+
+https://www.cnblogs.com/KevinGeorge/p/10110376.html
+
+https://blog.csdn.net/nzjdsds/article/details/82919100
+
+http://www.doc88.com/p-6741895256548.html
