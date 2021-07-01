@@ -7,3 +7,4 @@ tohide
 *.o
 *.order
 *.symvers
+*.log
