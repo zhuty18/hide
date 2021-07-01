@@ -1,34 +1,38 @@
-#include <linux/module.h>
-#include <linux/list.h>
 #include <linux/init.h>
+#include <linux/init_task.h>
+#include <linux/kernel.h>
+#include <linux/list.h>
+#include <linux/module.h>
 #include <linux/sched.h>
 
-MODULE_LICENSE("Dual BSD/GPL");
+//初始化函数
+static int __init scan_init(void) {
+    struct task_struct *task, *p;
+    struct list_head* pos;
+    int count = 0;
 
-static int test_init(void)
-{
-        struct task_struct *task, *p;
-        struct list_head *pos;
-        int count=0;
+    printk("内核模块开始运行\n");
 
-        printk(KERN_ALERT "test module init\n");
+    task = &init_task;
 
-        task=&init_task;
-        list_for_each(pos, &task->tasks)
-        {
-                p=list_entry(pos, struct task_struct, tasks);
-                count++;
-                printk(KERN_ALERT "%s[%d]\n", p->comm, p->pid);
-        }
-        printk(KERN_ALERT "Total %d tasks\n", count);
+    list_for_each(pos, &task->tasks) {
+        p = list_entry(pos, struct task_struct, tasks);
+        count++;
+        printk("state%ld", p->state);  //打印进程状态
+        printk("--->%d", p->pid);      //打印进程的ID号
+        printk("--->%s\n", p->comm);   //打印进程的名字
+    }
 
-        return 0;
+    printk("总的进程数为:%d\n", count);
+
+    return 0;
 }
 
-static void test_exit(void)
-{
-        printk(KERN_ALERT "test module exit!\n");
+//退出和清理函数
+static void __exit scan_exit(void) {
+    printk("xxx拜拜了, module被卸载了\n");
 }
 
-module_init(test_init);
-module_exit(test_exit);
+module_init(scan_init);
+module_exit(scan_exit);
+MODULE_LICENSE("GPL");

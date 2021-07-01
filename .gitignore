@@ -1,2 +1,9 @@
 .vscode
 tohide
+*.cmd
+*.mod.*
+*.mod
+*.ko
+*.o
+*.order
+*.symvers
