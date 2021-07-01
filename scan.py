@@ -20,6 +20,7 @@ process.close()
 output = output.split()
 t = int(len(output)/4)
 k = []
+# 第一行是PID YYD等列名，最后两行是这里使用的sh和ps命令
 for i in range(1, t-2):
     k.append(output[i*4])
 
