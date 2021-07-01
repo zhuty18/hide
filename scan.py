@@ -1,5 +1,7 @@
 import os
-# 在用户态比较/proc与ps命令，找到隐藏进程
+# 比较/proc与ps命令，找到隐藏进程
+# 可以找到所有用户隐藏的进程
+# 但没能解决内核态劫持的情况
 path = "/proc"
 l = os.listdir(path)
 p = []
