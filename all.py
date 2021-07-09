@@ -12,8 +12,8 @@ with open("1.log", 'r', encoding="utf8") as f:
         elif line.__contains__("进程扫描模块卸载成功"):
             pass
         elif k:
-            p.append(line.split()[-2])
-
+            t = line.split()
+            p.append((t[-2], t[-1]))
 
 cmd = "ps -e"
 process = os.popen(cmd)
@@ -24,9 +24,9 @@ output = output.split()
 t = int(len(output)/4)
 k = []
 for i in range(1, t-2):
-    k.append(output[i*4])
+    k.append((output[i*4], output[i*4+3]))
 
 # 后四行是装载模块读取进程列表时的sh, sudo, bash, insmod命令
 for i in range(0, len(p)-4):
-    if not(p[i] in k):
+    if not((p[i] in k) or p[i][1].__contains__("kworker/")):
         print(p[i])
