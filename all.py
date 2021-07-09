@@ -26,7 +26,18 @@ k = []
 for i in range(1, t-2):
     k.append((output[i*4], output[i*4+3]))
 
+hiding = []
+
 # 后四行是装载模块读取进程列表时的sh, sudo, bash, insmod命令
 for i in range(0, len(p)-4):
     if not((p[i] in k) or p[i][1].__contains__("kworker/")):
         print(p[i])
+        hiding.append(p[i])
+
+if hiding == []:
+    print("当前没有隐藏的进程！")
+else:
+    k = input("输入Y终止进程！")
+    if k == 'y' or k == 'Y':
+        for i in range(0, len(hiding)):
+            os.system("sudo kill "+hiding[i][0])
