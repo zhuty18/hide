@@ -21,16 +21,25 @@ output = process.read()
 process.close()
 output = output.split()
 # 第一行是PID YYD等列名，最后两行是这里使用的sh和ps命令
-t = int(len(output)/4)
+t = int(len(output) / 4)
 k = []
-for i in range(1, t-2):
-    k.append((output[i*4], output[i*4+3]))
+for i in range(1, t - 2):
+    k.append((output[i * 4], output[i * 4 + 3]))
 
 hiding = []
 
 # 后四行是装载模块读取进程列表时的sh, sudo, bash, insmod命令
-for i in range(0, len(p)-4):
-    if not((p[i] in k) or p[i][1].__contains__("kworker/")):
+filter = ['insmod', 'bash', 'sudo', 'sh']
+fi = {0: False}
+for i in range(-1, -len(p), -1):
+    if p[i][1] in filter:
+        fi[i + len(p)] = True
+        filter.remove(p[i][1])
+        if len(filter) == 0:
+            break
+
+for i in range(0, len(p)):
+    if not ((p[i] in k) or fi.get(i, False)):
         print(p[i])
         hiding.append(p[i])
 
@@ -40,4 +49,4 @@ else:
     k = input("输入Y终止进程！")
     if k == 'y' or k == 'Y':
         for i in range(0, len(hiding)):
-            os.system("sudo kill "+hiding[i][0])
+            os.system("sudo kill " + hiding[i][0])
