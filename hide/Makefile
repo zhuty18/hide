@@ -1,5 +1,5 @@
 TARGET = hide
-obj-m := ${TARGET}ko.o
+obj-m := ${TARGET}.o
 ${TARGET}ko-objs := ${TARGET}.o lib/lib.o
 
 
