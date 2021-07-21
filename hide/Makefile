@@ -1,5 +1,18 @@
-obj-m +=hide.o
-all:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+TARGET = hide
+obj-m := ${TARGET}ko.o
+${TARGET}ko-objs := ${TARGET}.o lib/lib.o
+
+
+EXTRA_CFLAGS = "-I${PWD}/lib"
+
+
+default:
+	${MAKE} modules \
+		--directory "/lib/modules/$(shell uname --release)/build" \
+		M="$(shell pwd)"
+
+
 clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+	${MAKE} clean \
+		--directory "/lib/modules/$(shell uname --release)/build" \
+		M="$(shell pwd)"
