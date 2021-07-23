@@ -28,9 +28,17 @@ for i in range(1, t - 2):
 
 hiding = []
 
+
+def legal_kworker(n):
+    for i in range(0, len(k)):
+        if k[i][0] == n[0] and k[i][1].startswith(n[1]):
+            return True
+    return False
+
+
 # 后四行是装载模块读取进程列表时的sh, sudo, bash, insmod命令
 filter = ['insmod', 'bash', 'sudo', 'sh']
-fi = {0: False}
+fi = {}
 for i in range(-1, -len(p), -1):
     if p[i][1] in filter:
         fi[i + len(p)] = True
@@ -39,7 +47,7 @@ for i in range(-1, -len(p), -1):
             break
 
 for i in range(0, len(p)):
-    if not ((p[i] in k) or fi.get(i, False)):
+    if not (((p[i] in k) or fi.get(i, False)) or legal_kworker(p[i])):
         print(p[i])
         hiding.append(p[i])
 
