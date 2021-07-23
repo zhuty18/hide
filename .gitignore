@@ -3,7 +3,7 @@ tohide
 *.cmd
 *.mod.*
 *.mod
-*.ko
+# *.ko
 *.o
 *.order
 *.symvers
