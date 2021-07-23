@@ -9,3 +9,4 @@ tohide
 *.symvers
 *.log
 *.zip
+.cache.mk
