@@ -72,7 +72,7 @@ double get_proc_cpu(unsigned int pid) {
     totalcputime1 = get_cpu_total_occupy();
     procputime1 = get_cpu_proc_occupy(pid);
 
-    usleep(100000);
+    usleep(200000);
 
     totalcputime2 = get_cpu_total_occupy();
     procputime2 = get_cpu_proc_occupy(pid);
