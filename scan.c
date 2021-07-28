@@ -10,7 +10,7 @@ static int __init scan_init(void) {
     struct task_struct *task, *p;
     struct list_head* pos;
     int count = 0;
-    printk("进程扫描模块开始运行\n");
+    printk("start scaning!!!\n");
 
     task = &init_task;
 
@@ -27,7 +27,7 @@ static int __init scan_init(void) {
 
 //退出和清理函数
 static void __exit scan_exit(void) {
-    printk("进程扫描模块卸载成功！\n");
+    printk("scaning completed!!!\n");
 }
 
 module_init(scan_init);

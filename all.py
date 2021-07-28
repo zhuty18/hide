@@ -1,7 +1,7 @@
-import os
+import os, time
 # 比较内核态进程列表与ps命令，找到隐藏进程
 # 可以解决内核态劫持的情况
-
+cost = time.time()
 # 读取ps命令输出
 cmd = "ps -e"
 process = os.popen(cmd)
@@ -26,9 +26,9 @@ f.remove('')
 p = []
 h = False
 for line in f:
-    if line.__contains__("进程扫描模块开始运行"):
+    if line.__contains__("start scaning!!!"):
         h = True
-    elif line.__contains__("进程扫描模块卸载成功"):
+    elif line.__contains__("scaning completed!!!"):
         pass
     elif h:
         t = line.split()
@@ -67,9 +67,14 @@ for i in hiding:
     output = process.read()
     process.close()
     output = output.split()
-    if len(output) == 1:
-        hiding.remove(i)
+    for h in output:
+        h = h.split()
+        k = (h[0], h[3])
+        if k == i:
+            hiding.remove(i)
 
+print(time.time() - cost)
+# 输出结果
 if hiding == []:
     print("当前没有隐藏的进程！")
 else:
