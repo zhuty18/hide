@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #define VMRSS_LINE 17
 #define VMSIZE_LINE 13
