@@ -1,6 +1,6 @@
 import os, random, time
 
-TEST_TIME = 100
+TEST_TIME = 10000
 right = 0
 
 f = open('res.txt', 'w')
@@ -26,7 +26,7 @@ for i in range(TEST_TIME):
     cost_time += float(t[0])
     cost_cpu += float(t[1])
     cost_mem += int(t[2])
-    print("\r {}%".format(100 * i / TEST_TIME), end="\r")
+    print("\r测试已完成{}%".format(100 * i / TEST_TIME), end="\r")
 
 print("测试数：" + str(TEST_TIME))
 print("错误率" + str(100 * (TEST_TIME - right) / TEST_TIME) + "%")
