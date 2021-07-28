@@ -138,6 +138,7 @@ int main() {
             //内核扫描进程在用户态获取的结果中
             n = n->next;
             u = u->next;
+            DeleteFirst(que_knl, 1);
         } else if (h < n->pid) {
             //用户态获取的进程先于内核扫描进程建立，即该进程已死亡
             u = u->next;
@@ -146,8 +147,12 @@ int main() {
             if (CheckProc(n->pid, n->name) == 0) {
                 //检查该进程是否存活
                 InsertQueue(hide, n->pid, n->name);
+                n = n->next;
+                DeleteFirst(que_knl, 0);
+            } else {
+                n = n->next;
+                DeleteFirst(que_knl, 1);
             }
-            n = n->next;
         }
     }
     printf("扫描用时：%fs\n", (double)(clock() - start) / CLOCKS_PER_SEC);
