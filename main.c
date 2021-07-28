@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include "myqueue.h"
+#include "mystat.h"
 #define BUF_SIZE 1024
 char buf[BUF_SIZE];
 
@@ -152,13 +154,18 @@ int main() {
             }
         }
     }
-    printf("扫描用时：%fs\n", (double)(clock() - start) / CLOCKS_PER_SEC);
+    clock_t end = clock();
     PrintQueue(hide);
+
+    double time = (double)(end - start) / CLOCKS_PER_SEC;
+    int pid = getpid();
+    double cpu = get_proc_cpu(pid);
+    int mem = get_proc_mem(pid);
+    printf("%f %.16f %d\n", time, cpu, mem);
 
     //释放内存
     DeleteQueue(hide, 0);
     DeleteQueue(que_usr, 1);
     DeleteQueue(que_knl, 1);
-
     return 0;
 }

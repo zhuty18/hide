@@ -1,6 +1,6 @@
 import random, os, time
 
 while True:
-    t = random.random() / 100
+    t = random.random()
     os.system("ls")
     time.sleep(t)
