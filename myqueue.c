@@ -73,9 +73,9 @@ void PrintQueue(que* q) {
     }
 }
 
-void DeleteQueue(que* q) {
+void DeleteQueue(que* q, int clean_name) {
     while (q->head) {
-        DeleteFirst(q, 1);
+        DeleteFirst(q, clean_name);
     }
     free(q);
 }

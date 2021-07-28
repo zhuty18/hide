@@ -94,7 +94,7 @@ int main() {
     que_knl = InitQueue();
     system("sudo insmod scan.ko");
     system("sudo rmmod scan");
-    p_file = popen("dmesg -c", "r");
+    p_file = popen("sudo dmesg -c", "r");
     ok = 0;
     while (fgets(buf, BUF_SIZE, p_file) != NULL) {
         if (ok == 0) {
@@ -138,7 +138,6 @@ int main() {
             //内核扫描进程在用户态获取的结果中
             n = n->next;
             u = u->next;
-            DeleteFirst(que_knl, 1);
         } else if (h < n->pid) {
             //用户态获取的进程先于内核扫描进程建立，即该进程已死亡
             u = u->next;
@@ -148,10 +147,8 @@ int main() {
                 //检查该进程是否存活
                 InsertQueue(hide, n->pid, n->name);
                 n = n->next;
-                DeleteFirst(que_knl, 0);
             } else {
                 n = n->next;
-                DeleteFirst(que_knl, 1);
             }
         }
     }
@@ -159,9 +156,9 @@ int main() {
     PrintQueue(hide);
 
     //释放内存
-    DeleteQueue(que_usr);
-    DeleteQueue(que_knl);
-    DeleteQueue(hide);
+    DeleteQueue(hide, 0);
+    DeleteQueue(que_usr, 1);
+    DeleteQueue(que_knl, 1);
 
     return 0;
 }

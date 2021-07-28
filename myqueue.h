@@ -30,4 +30,4 @@ void DeleteLast(que* q, int clean_name);
 // 打印队列信息
 void PrintQueue(que* q);
 
-void DeleteQueue(que* q);
+void DeleteQueue(que* q, int clean_name);
