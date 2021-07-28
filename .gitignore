@@ -11,3 +11,4 @@ tohide
 *.zip
 .cache.mk
 main
+res.txt
