@@ -64,27 +64,6 @@ unsigned long get_cpu_proc_occupy(unsigned int pid) {
     return (t.utime + t.stime + t.cutime + t.cstime);
 }
 
-//获取CPU占用率
-double get_proc_cpu(unsigned int pid) {
-    unsigned long totalcputime1, totalcputime2;
-    unsigned long procputime1, procputime2;
-
-    totalcputime1 = get_cpu_total_occupy();
-    procputime1 = get_cpu_proc_occupy(pid);
-
-    usleep(200000);
-
-    totalcputime2 = get_cpu_total_occupy();
-    procputime2 = get_cpu_proc_occupy(pid);
-
-    double pcpu = 0.0;
-    if (0 != totalcputime2 - totalcputime1) {
-        pcpu = 100.0 * (procputime2 - procputime1) /
-               (totalcputime2 - totalcputime1);
-    }
-
-    return pcpu;
-}
 
 //获取进程占用内存
 unsigned int get_proc_mem(unsigned int pid) {

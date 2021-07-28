@@ -74,6 +74,10 @@ int CheckProc(int pid, char* name) {
 }
 
 int main() {
+    unsigned long totalcputime1, totalcputime2;
+    unsigned long procputime1, procputime2;
+    totalcputime1 = get_cpu_total_occupy();
+    procputime1 = get_cpu_proc_occupy(getpid());
     clock_t start = clock();
 
     que* que_usr;
@@ -140,11 +144,8 @@ int main() {
             //内核扫描进程在用户态获取的结果中
             n = n->next;
             u = u->next;
-        } else if (h < n->pid) {
-            //用户态获取的进程先于内核扫描进程建立，即该进程已死亡
-            u = u->next;
-        } else if (h > n->pid) {
-            //用户态获取的进程晚于内核扫描进程建立
+        } else if ((h > n->pid) || (u == NULL)) {
+            //用户态获取的进程晚于内核扫描进程建立，或用户态进程列表已经遍历完成
             if (CheckProc(n->pid, n->name) == 0) {
                 //检查该进程是否存活
                 InsertQueue(hide, n->pid, n->name);
@@ -152,6 +153,9 @@ int main() {
             } else {
                 n = n->next;
             }
+        } else if (h < n->pid) {
+            //用户态获取的进程先于内核扫描进程建立，即该进程已死亡
+            u = u->next;
         }
     }
     clock_t end = clock();
@@ -159,7 +163,13 @@ int main() {
 
     double time = (double)(end - start) / CLOCKS_PER_SEC;
     int pid = getpid();
-    double cpu = get_proc_cpu(pid);
+    totalcputime2 = get_cpu_total_occupy();
+    procputime2 = get_cpu_proc_occupy(pid);
+    double cpu = 0.0;
+    if (0 != totalcputime2 - totalcputime1) {
+        cpu = 100.0 * (procputime2 - procputime1) /
+              (totalcputime2 - totalcputime1);
+    }
     int mem = get_proc_mem(pid);
     printf("%f %.16f %d\n", time, cpu, mem);
 

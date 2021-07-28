@@ -21,8 +21,11 @@ typedef struct {
     unsigned long cstime;  // all dead time
 } Proc_Cpu_Occupy_t;
 
-//获取CPU占用率
-double get_proc_cpu(unsigned int pid);
+//获取总的CPU时间
+unsigned long get_cpu_total_occupy();
+
+//获取进程的CPU时间
+unsigned long get_cpu_proc_occupy(unsigned int pid);
 
 //获取进程占用内存
 unsigned int get_proc_mem(unsigned int pid);
