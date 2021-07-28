@@ -10,3 +10,4 @@ tohide
 *.log
 *.zip
 .cache.mk
+main
