@@ -3,7 +3,8 @@ import os, random, time
 TEST_TIME = 10000
 right = 0
 
-f = open('res.txt', 'w')
+log = time.strftime("%y%m%d_%H%M%S", time.localtime(time.time()))
+f = open('res_'+log+'.txt', 'w')
 cost_time = 0
 cost_cpu = 0
 cost_mem = 0
