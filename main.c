@@ -57,12 +57,7 @@ void CleanEnd(que* q, char* target) {
 int CheckProc(int pid, char* name) {
     int rtn = 0;
     char cmd[64];
-    int l = 13;
-    strcpy(cmd, "ps -e | grep \"");
-    strcpy(&cmd[l + 1], name);
-    l += strlen(name);
-    cmd[l + 1] = '\"';
-    cmd[l + 2] = '\0';
+    sprintf(cmd, "ps -e | grep \"%s\"", name);
     FILE* p_file = popen(cmd, "r");
     while (fgets(buf, BUF_SIZE, p_file) != NULL) {
         int p;
