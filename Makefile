@@ -2,7 +2,7 @@ obj-m +=scan.o
 all:mod
 	gcc main.c myqueue.c -o main
 debug:mod
-	gcc main.c myqueue.c mystat.c -D SUPER -o main -D
+	gcc main.c myqueue.c mystat.c -D SUPER -o main -g
 mod:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 clean:
