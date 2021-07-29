@@ -1,9 +1,11 @@
+#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 //定义节点
 typedef struct node {
-    int pid;
+    pid_t pid;
     char* name;
     struct node* last;
     struct node* next;
@@ -14,6 +16,12 @@ typedef struct queue_link {
     node* head;
     node* tail;
 } que;
+
+//进程信息
+typedef struct info {
+    pid_t ppid;
+    char* user;
+} info;
 
 //初始化队列
 que* InitQueue();

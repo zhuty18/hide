@@ -59,17 +59,60 @@ void DeleteLast(que* q, int clean_name) {
     }
     free(n);
 }
+char hidden_user[] = "the user is hidden!";
+info* GetInfo(pid_t pid) {
+    info* rtn = (info*)malloc(sizeof(info));
+    uid_t uid;
+
+    char file_name[64] = {0};
+    FILE* fd;
+    char line_buff[512] = {0};
+    sprintf(file_name, "/proc/%d/status", pid);
+
+    fd = fopen(file_name, "r");
+    if (NULL == fd) {
+        rtn->ppid = 0;
+        rtn->user = hidden_user;
+    } else {
+        char name[64];
+        for (int i = 0; i < 6; i++) {
+            fgets(line_buff, sizeof(line_buff), fd);
+        }
+        fgets(line_buff, sizeof(line_buff), fd);
+        sscanf(line_buff, "%s %d", name, &rtn->ppid);
+        fgets(line_buff, sizeof(line_buff), fd);
+        fgets(line_buff, sizeof(line_buff), fd);
+        sscanf(line_buff, "%s %d", name, &uid);
+        fclose(fd);
+
+        struct passwd* pwd;
+        pwd = getpwuid(uid);
+        rtn->user = pwd->pw_name;
+    }
+    return rtn;
+}
 
 // 打印队列信息
 void PrintQueue(que* q) {
-    if (q->head == NULL) {
-        printf("当前没有隐藏的进程！\n");
-        return;
-    } else {
-        printf("隐藏进程如下：\n");
-        for (node* n = q->head; n; n = n->next) {
-            printf("%d %s\n", n->pid, n->name);
+    node* n = q->head;
+    int hide = 0;
+    while (n) {
+        char path[64];
+        sprintf(path, "/proc/%d", n->pid);
+        if (access(path, F_OK) == 0) {
+            info* info = GetInfo(n->pid);
+            if (hide == 0) {
+                printf("隐藏进程如下：\n");
+            }
+            printf("pid: %d, 父进程pid: %d, 进程名: %s, 用户: %s\n", n->pid,
+                   info->ppid, n->name, info->user);
+            free(info);
+            hide++;
         }
+        n = n->next;
+    }
+    if (hide == 0) {
+        printf("当前没有隐藏的进程！\n");
     }
 }
 
