@@ -163,12 +163,12 @@ int main() {
             u = u->next;
         }
     }
-#ifdef
+#ifdef SUPER
     clock_t end = clock();
 #endif
     PrintQueue(hide);
     sleep(1);
-#ifdef
+#ifdef SUPER
     double time = (double)(end - start) / CLOCKS_PER_SEC;
     int pid = getpid();
     totalcputime2 = get_cpu_total_occupy();
