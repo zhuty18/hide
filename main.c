@@ -83,13 +83,9 @@ int main() {
     que* que_usr;
     que_usr = InitQueue();
     FILE* p_file = popen("ps -e", "r");
-    int ok = 0;
+    fgets(buf, BUF_SIZE, p_file);
     while (fgets(buf, BUF_SIZE, p_file) != NULL) {
-        if (ok == 0) {
-            ok = 1;
-        } else {
-            AddProc(que_usr, 0);
-        }
+        AddProc(que_usr, 0);
     }
     pclose(p_file);
     // 删除最后两个sh和ps进程
@@ -101,7 +97,7 @@ int main() {
     system("sudo insmod scan.ko");
     system("sudo rmmod scan");
     p_file = popen("sudo dmesg -c", "r");
-    ok = 0;
+    int ok = 0;
     while (fgets(buf, BUF_SIZE, p_file) != NULL) {
         if (ok == 0) {
             for (int i = 0; buf[i] != '\0'; i++) {
