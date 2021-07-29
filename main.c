@@ -48,7 +48,8 @@ void CleanEnd(que* q, char* target) {
             }
         }
     }
-    printf("clean fail\n");
+    // RedHat操作系统内不会有sh进程
+    // printf("clean fail %s\n",target);
 }
 
 int CheckProc(int pid, char* name) {
@@ -160,7 +161,7 @@ int main() {
     }
     clock_t end = clock();
     PrintQueue(hide);
-
+    sleep(1);
     double time = (double)(end - start) / CLOCKS_PER_SEC;
     int pid = getpid();
     totalcputime2 = get_cpu_total_occupy();
@@ -170,6 +171,7 @@ int main() {
         cpu = 100.0 * (procputime2 - procputime1) /
               (totalcputime2 - totalcputime1);
     }
+    // printf("%ld,%ld\n",procputime2-procputime1,totalcputime2-totalcputime1);
     int mem = get_proc_mem(pid);
     printf("%f %.16f %d\n", time, cpu, mem);
 

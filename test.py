@@ -8,6 +8,8 @@ cost_time = 0
 cost_cpu = 0
 cost_mem = 0
 for i in range(TEST_TIME):
+    # if i !=0:
+    #     time.sleep(random.random())
     p = os.popen("./main")
     output = p.read()
     p.close()
@@ -26,8 +28,9 @@ for i in range(TEST_TIME):
     cost_time += float(t[0])
     cost_cpu += float(t[1])
     cost_mem += int(t[2])
-    print("\r测试已完成{}%".format(100 * i / TEST_TIME), end="\r")
+    print("\r测试已完成{}%".format(100 * (i+1) / TEST_TIME), end="\r")
 
+print()
 print("测试数：" + str(TEST_TIME))
 print("错误率" + str(100 * (TEST_TIME - right) / TEST_TIME) + "%")
 print("平均耗时：" + format(cost_time / TEST_TIME, ".6f") + "s")
