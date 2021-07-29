@@ -28,7 +28,7 @@ for i in range(TEST_TIME):
     cost_time += float(t[0])
     cost_cpu += float(t[1])
     cost_mem += int(t[2])
-    print("\r测试已完成{}%".format(100 * (i+1) / TEST_TIME), end="\r")
+    print("\r测试已完成{}%".format(100 * (i + 1) / TEST_TIME), end="\r")
 
 print()
 print("测试数：" + str(TEST_TIME))
