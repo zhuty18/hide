@@ -4,7 +4,9 @@
 #include <time.h>
 #include <unistd.h>
 #include "myqueue.h"
+#ifdef SUPER
 #include "mystat.h"
+#endif
 #define BUF_SIZE 1024
 char buf[BUF_SIZE];
 
@@ -75,10 +77,12 @@ int CheckProc(int pid, char* name) {
 }
 
 int main() {
+#ifdef SUPER
     unsigned long totalcputime1, totalcputime2;
     unsigned long procputime1, procputime2;
     totalcputime1 = get_cpu_total_occupy();
     procputime1 = get_cpu_proc_occupy(getpid());
+#endif
     clock_t start = clock();
 
     que* que_usr;
@@ -159,9 +163,12 @@ int main() {
             u = u->next;
         }
     }
+#ifdef
     clock_t end = clock();
+#endif
     PrintQueue(hide);
     sleep(1);
+#ifdef
     double time = (double)(end - start) / CLOCKS_PER_SEC;
     int pid = getpid();
     totalcputime2 = get_cpu_total_occupy();
@@ -174,6 +181,7 @@ int main() {
     // printf("%ld,%ld\n",procputime2-procputime1,totalcputime2-totalcputime1);
     int mem = get_proc_mem(pid);
     printf("%f %.16f %d\n", time, cpu, mem);
+#endif
 
     //释放内存
     DeleteQueue(hide, 0);
